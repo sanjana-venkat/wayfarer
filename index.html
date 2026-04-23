@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wayfarer — Travel Your Way</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #1c1610;
+    --cream: #f8f3ec;
+    --warm-white: #fdfaf6;
+    --terra: #b85c38;
+    --terra-light: #e8c4b2;
+    --sage: #6b7c6a;
+    --sage-light: #d4dcd3;
+    --muted: #7a6f65;
+    --border: rgba(28, 22, 16, 0.12);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--warm-white);
+    color: var(--ink);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 20px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(253, 250, 246, 0.88);
+    backdrop-filter: blur(12px);
+    border-bottom: 0.5px solid var(--border);
+  }
+  .logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px; font-weight: 600; letter-spacing: 0.04em;
+    color: var(--ink); text-decoration: none;
+  }
+  .logo span { color: var(--terra); }
+  nav ul { list-style: none; display: flex; gap: 32px; align-items: center; }
+  nav a { text-decoration: none; font-size: 14px; font-weight: 400; color: var(--muted); transition: color 0.2s; }
+  nav a:hover { color: var(--ink); }
+  .nav-cta {
+    background: var(--ink); color: var(--warm-white) !important;
+    padding: 9px 20px; border-radius: 100px;
+    font-size: 13px; font-weight: 500;
+    transition: background 0.2s !important;
+  }
+  .nav-cta:hover { background: var(--terra) !important; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid; grid-template-columns: 1fr 1fr;
+    padding-top: 80px;
+  }
+  .hero-left {
+    padding: 80px 64px 80px 80px;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .hero-eyebrow {
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--terra); font-weight: 500; margin-bottom: 24px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .hero-eyebrow::before {
+    content: ''; display: block; width: 28px; height: 1px; background: var(--terra);
+  }
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(52px, 5.5vw, 80px);
+    font-weight: 300; line-height: 1.08;
+    letter-spacing: -0.02em;
+    margin-bottom: 28px;
+  }
+  h1 em { font-style: italic; color: var(--terra); }
+  .hero-sub {
+    font-size: 17px; line-height: 1.7; color: var(--muted);
+    max-width: 420px; margin-bottom: 48px; font-weight: 300;
+  }
+  .hero-actions { display: flex; align-items: center; gap: 20px; }
+  .btn-primary {
+    background: var(--ink); color: var(--warm-white);
+    padding: 14px 30px; border-radius: 100px;
+    font-size: 14px; font-weight: 500; text-decoration: none;
+    transition: all 0.2s; display: inline-block;
+  }
+  .btn-primary:hover { background: var(--terra); transform: translateY(-1px); }
+  .btn-ghost {
+    font-size: 14px; color: var(--muted); text-decoration: none;
+    display: flex; align-items: center; gap: 8px; font-weight: 400;
+  }
+  .btn-ghost::after { content: '→'; transition: transform 0.2s; }
+  .btn-ghost:hover::after { transform: translateX(4px); }
+  .btn-ghost:hover { color: var(--ink); }
+
+  /* HERO RIGHT — preference card stack */
+  .hero-right {
+    background: var(--cream);
+    padding: 80px 80px 80px 40px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .hero-right::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at 80% 20%, rgba(184,92,56,0.08) 0%, transparent 60%),
+                radial-gradient(circle at 20% 80%, rgba(107,124,106,0.07) 0%, transparent 55%);
+  }
+  .card-stack { position: relative; width: 340px; height: 420px; }
+  .pref-card {
+    position: absolute; left: 0; right: 0;
+    background: var(--warm-white);
+    border: 0.5px solid var(--border);
+    border-radius: 20px;
+    padding: 24px 28px;
+    box-shadow: 0 2px 32px rgba(28,22,16,0.06);
+  }
+  .pref-card:nth-child(1) { top: 0; transform: rotate(-3deg) translateX(-8px); opacity: 0.55; z-index: 1; }
+  .pref-card:nth-child(2) { top: 20px; transform: rotate(1.5deg) translateX(10px); opacity: 0.75; z-index: 2; }
+  .pref-card:nth-child(3) { top: 48px; transform: none; z-index: 3; box-shadow: 0 8px 48px rgba(28,22,16,0.1); }
+  .card-label {
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--terra); font-weight: 500; margin-bottom: 16px;
+  }
+  .card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px; font-weight: 600; margin-bottom: 20px; line-height: 1.2;
+  }
+  .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+  .tag {
+    font-size: 12px; font-weight: 400;
+    padding: 5px 12px; border-radius: 100px;
+    border: 0.5px solid var(--border);
+    color: var(--muted);
+  }
+  .tag.active {
+    background: var(--ink); color: var(--warm-white); border-color: var(--ink);
+  }
+  .tag.terra { background: var(--terra-light); color: var(--terra); border-color: transparent; }
+  .card-divider { height: 0.5px; background: var(--border); margin: 16px 0; }
+  .source-row { display: flex; align-items: center; gap: 10px; }
+  .source-badge {
+    font-size: 12px; padding: 4px 10px; border-radius: 6px;
+    background: var(--cream); color: var(--muted);
+    border: 0.5px solid var(--border);
+  }
+  .source-badge.on { background: var(--sage-light); color: var(--sage); border-color: transparent; }
+  .source-label { font-size: 11px; color: var(--muted); }
+
+  /* SECTION SHARED */
+  section { padding: 100px 80px; }
+
+  /* HOW IT WORKS */
+  .how { background: var(--cream); }
+  .section-eyebrow {
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--terra); font-weight: 500; margin-bottom: 20px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-eyebrow::before { content: ''; display: block; width: 20px; height: 1px; background: var(--terra); }
+  h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 4vw, 56px);
+    font-weight: 300; line-height: 1.1;
+    letter-spacing: -0.02em; margin-bottom: 16px;
+  }
+  .section-sub { font-size: 16px; color: var(--muted); max-width: 520px; margin-bottom: 64px; font-weight: 300; line-height: 1.7; }
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+  .step {
+    background: var(--warm-white);
+    padding: 40px 36px;
+    position: relative;
+  }
+  .step:first-child { border-radius: 20px 0 0 20px; }
+  .step:last-child { border-radius: 0 20px 20px 0; }
+  .step-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 64px; font-weight: 300;
+    color: var(--terra-light); line-height: 1;
+    margin-bottom: 24px; letter-spacing: -0.04em;
+  }
+  .step h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px; font-weight: 600; margin-bottom: 12px; line-height: 1.2;
+  }
+  .step p { font-size: 14px; color: var(--muted); line-height: 1.7; font-weight: 300; }
+  .step-phase {
+    display: inline-block; margin-top: 20px;
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 100px;
+    background: var(--cream); color: var(--sage); font-weight: 500;
+  }
+  .step-phase.phase2 { background: rgba(184,92,56,0.1); color: var(--terra); }
+
+  /* FEATURES */
+  .features-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+  .feat {
+    padding: 48px 44px;
+    border: 0.5px solid var(--border);
+    border-radius: 4px;
+    transition: background 0.2s;
+  }
+  .feat:hover { background: var(--cream); }
+  .feat-icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    border: 0.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 24px; font-size: 18px;
+  }
+  .feat h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px; font-weight: 600; margin-bottom: 10px;
+  }
+  .feat p { font-size: 14px; color: var(--muted); line-height: 1.7; font-weight: 300; }
+
+  /* EXAMPLE */
+  .example { background: var(--ink); color: var(--warm-white); }
+  .example .section-eyebrow { color: var(--terra-light); }
+  .example .section-eyebrow::before { background: var(--terra-light); }
+  .example h2 { color: var(--warm-white); }
+  .example .section-sub { color: rgba(253,250,246,0.6); }
+  .chat-window {
+    background: rgba(255,255,255,0.05);
+    border: 0.5px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 32px;
+    max-width: 640px;
+  }
+  .msg { display: flex; gap: 12px; margin-bottom: 20px; align-items: flex-start; }
+  .msg.user { flex-direction: row-reverse; }
+  .avatar {
+    width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 500;
+  }
+  .avatar.ai { background: var(--terra); color: white; }
+  .avatar.me { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.7); }
+  .bubble {
+    max-width: 80%; padding: 12px 16px; border-radius: 16px;
+    font-size: 14px; line-height: 1.6;
+  }
+  .bubble.ai { background: rgba(255,255,255,0.08); color: rgba(253,250,246,0.9); border-radius: 4px 16px 16px 16px; }
+  .bubble.me { background: var(--terra); color: white; border-radius: 16px 4px 16px 16px; text-align: right; }
+  .source-toggle {
+    margin-top: 12px; padding-top: 12px;
+    border-top: 0.5px solid rgba(255,255,255,0.08);
+    font-size: 11px; color: rgba(253,250,246,0.4);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .s-pill {
+    padding: 3px 10px; border-radius: 100px;
+    font-size: 11px; font-weight: 500;
+  }
+  .s-pill.on { background: rgba(107,124,106,0.3); color: #a8c0a6; }
+  .s-pill.off { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.3); text-decoration: line-through; }
+
+  /* PRICING */
+  .pricing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 780px; }
+  .price-card {
+    padding: 40px 36px;
+    border: 0.5px solid var(--border);
+    border-radius: 20px;
+    transition: all 0.2s;
+  }
+  .price-card:hover { border-color: rgba(28,22,16,0.2); box-shadow: 0 8px 40px rgba(28,22,16,0.06); }
+  .price-card.featured { border-color: var(--terra); background: var(--cream); }
+  .price-badge {
+    font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 4px 12px; border-radius: 100px;
+    background: var(--terra); color: white;
+    display: inline-block; margin-bottom: 24px; font-weight: 500;
+  }
+  .price-name { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 600; margin-bottom: 8px; }
+  .price-amount { font-family: 'Cormorant Garamond', serif; font-size: 48px; font-weight: 300; line-height: 1; }
+  .price-amount sup { font-size: 22px; vertical-align: super; font-weight: 300; }
+  .price-amount span { font-size: 16px; font-weight: 300; color: var(--muted); font-family: 'DM Sans', sans-serif; }
+  .price-desc { font-size: 13px; color: var(--muted); margin: 12px 0 28px; font-weight: 300; line-height: 1.6; }
+  .price-features { list-style: none; margin-bottom: 32px; }
+  .price-features li {
+    font-size: 13px; color: var(--muted); padding: 8px 0;
+    border-bottom: 0.5px solid var(--border);
+    display: flex; align-items: center; gap: 10px; font-weight: 300;
+  }
+  .price-features li::before { content: '✓'; color: var(--sage); font-size: 12px; font-weight: 500; }
+
+  /* FOOTER */
+  footer {
+    background: var(--ink); color: rgba(253,250,246,0.5);
+    padding: 56px 80px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  footer .logo { color: var(--warm-white); }
+  .footer-links { display: flex; gap: 24px; }
+  .footer-links a { font-size: 13px; color: rgba(253,250,246,0.4); text-decoration: none; }
+  .footer-links a:hover { color: rgba(253,250,246,0.8); }
+
+  /* ANIMATIONS */
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-6px); }
+  }
+  .card-stack { animation: float 6s ease-in-out infinite; }
+
+  @media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-left { padding: 60px 24px 40px; }
+    .hero-right { padding: 40px 24px 60px; display: none; }
+    section { padding: 64px 24px; }
+    .steps { grid-template-columns: 1fr; gap: 2px; }
+    .step:first-child { border-radius: 20px 20px 0 0; }
+    .step:last-child { border-radius: 0 0 20px 20px; }
+    .features-grid { grid-template-columns: 1fr; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 24px; padding: 40px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">Way<span>farer</span></a>
+  <ul>
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#" class="nav-cta">Join waitlist</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" style="padding: 0;">
+  <div class="hero-left">
+    <div class="hero-eyebrow">Your personal travel intelligence</div>
+    <h1>Travel built around<br><em>who you are,</em><br>not where to go.</h1>
+    <p class="hero-sub">Skip the tourist traps. Wayfarer learns what you love — and what you don't — to build itineraries that feel like they were designed just for you. Then it books everything automatically.</p>
+    <div class="hero-actions">
+      <a href="#" class="btn-primary">Join the waitlist</a>
+      <a href="#how" class="btn-ghost">See how it works</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="card-stack">
+      <div class="pref-card">
+        <div class="card-label">Your preferences</div>
+        <div class="card-title">Outdoor & Architecture</div>
+        <div class="tag-row">
+          <span class="tag active">Hiking</span>
+          <span class="tag active">Street art</span>
+          <span class="tag active">Jazz</span>
+          <span class="tag">Casinos</span>
+          <span class="tag">Clubs</span>
+        </div>
+      </div>
+      <div class="pref-card">
+        <div class="card-label">Curating your Las Vegas</div>
+        <div class="card-title">Off the Strip</div>
+      </div>
+      <div class="pref-card">
+        <div class="card-label">Curating your Las Vegas</div>
+        <div class="card-title">48 hours, your way</div>
+        <div class="tag-row">
+          <span class="tag terra">Red Rock Canyon</span>
+          <span class="tag terra">Arts District</span>
+          <span class="tag terra">Neon Museum</span>
+        </div>
+        <div class="card-divider"></div>
+        <div class="source-row">
+          <div class="source-label">Sources:</div>
+          <span class="source-badge on">Yelp</span>
+          <span class="source-badge on">Reddit</span>
+          <span class="source-badge">TripAdvisor</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="section-eyebrow">The process</div>
+  <h2>Two phases,<br>one seamless journey.</h2>
+  <p class="section-sub">Wayfarer first understands you, then plans for you, then handles everything — so you show up and just experience it.</p>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <h3>Tell us who you are</h3>
+      <p>Share what you love, what you skip, and what matters. Dietary needs, activity levels, niche obsessions — the more we know, the better your trip.</p>
+      <span class="step-phase">Setup</span>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <h3>Review your curated guide</h3>
+      <p>We generate a full itinerary sourced from the places you trust — Reddit locals, Yelp gems, travel blogs. Approve, swap, or tweak anything before we proceed.</p>
+      <span class="step-phase">Phase 1</span>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <h3>We handle the bookings</h3>
+      <p>Once you give the green light, Wayfarer automatically reserves tables, books tickets, and locks in timing — across OpenTable, Resy, and more.</p>
+      <span class="step-phase phase2">Phase 2 — Coming soon</span>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="section-eyebrow">Features</div>
+  <h2>Built for travelers<br>with opinions.</h2>
+  <p class="section-sub">We designed Wayfarer for people who know what they want — they just need the time and tools to find it.</p>
+  <div class="features-grid">
+    <div class="feat">
+      <div class="feat-icon">◎</div>
+      <h3>Preference-first recommendations</h3>
+      <p>Not "Top 10 things to do." Instead: a guide filtered through your interests, dietary needs, comfort level, and the things you'd rather skip entirely.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">⊕</div>
+      <h3>Choose your sources</h3>
+      <p>Trust Reddit locals over travel blogs? Prefer Yelp reviews to influencer guides? Toggle exactly which sources inform your itinerary.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">◈</div>
+      <h3>Conversational planning</h3>
+      <p>Chat naturally with your planner. "No nightlife, more street food." "Can we do this in a half day?" It understands context and adjusts on the fly.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">⟳</div>
+      <h3>Automatic bookings</h3>
+      <p>Once you approve the plan, we handle reservations — OpenTable, Resy, ticketing — so your calendar fills itself. No tab-hopping required.</p>
+    </div>
+  </div>
+</section>
+
+<!-- EXAMPLE CONVERSATION -->
+<section class="example">
+  <div class="section-eyebrow">See it in action</div>
+  <h2 style="color: var(--warm-white);">A trip to Vegas,<br><em style="color: var(--terra-light);">without the Vegas.</em></h2>
+  <p class="section-sub">Here's what a real planning session looks like for someone who doesn't drink or gamble.</p>
+  <div class="chat-window">
+    <div class="msg">
+      <div class="avatar me">Y</div>
+      <div class="bubble me">Planning 3 days in Las Vegas. I don't drink or gamble — what's actually worth seeing?</div>
+    </div>
+    <div class="msg">
+      <div class="avatar ai">W</div>
+      <div class="bubble ai">
+        Totally — Las Vegas has a lot more than the Strip once you know where to look. Based on your interest in outdoor spaces and design, I'd anchor your trip around Red Rock Canyon (a 20-minute drive), the Arts District on First Friday, and the Neon Museum. Want me to build a full 3-day plan around those?
+        <div class="source-toggle">
+          Sourcing from: <span class="s-pill on">Reddit</span> <span class="s-pill on">Yelp</span> <span class="s-pill off">TripAdvisor</span>
+        </div>
+      </div>
+    </div>
+    <div class="msg">
+      <div class="avatar me">Y</div>
+      <div class="bubble me">Yes — and add some good food, I love Japanese and Mexican. No buffets.</div>
+    </div>
+    <div class="msg">
+      <div class="avatar ai">W</div>
+      <div class="bubble ai">
+        Got it. I found Yui Edomae Sushi (locals swear by it on r/vegaslocals) and Leticia's Mexican Cocina in the Arts District. Building your itinerary now — I'll flag anything that needs a reservation so we can lock those in once you approve.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="section-eyebrow">Pricing</div>
+  <h2>Simple, honest pricing.</h2>
+  <p class="section-sub">Start with curated planning, add automated booking when you're ready.</p>
+  <div class="pricing-grid">
+    <div class="price-card">
+      <div class="price-name">Explorer</div>
+      <div class="price-amount"><sup>$</sup>0<span>/month</span></div>
+      <p class="price-desc">Everything you need to plan a trip that actually fits you.</p>
+      <ul class="price-features">
+        <li>Preference-based itineraries</li>
+        <li>Choose your sources (Yelp, Reddit, etc.)</li>
+        <li>Conversational planning</li>
+        <li>3 trips/month</li>
+      </ul>
+      <a href="#" class="btn-primary" style="display:block; text-align:center;">Get started free</a>
+    </div>
+    <div class="price-card featured">
+      <span class="price-badge">Most popular</span>
+      <div class="price-name">Wayfarer</div>
+      <div class="price-amount"><sup>$</sup>12<span>/month</span></div>
+      <p class="price-desc">Let us handle the bookings too. Show up — we've taken care of the rest.</p>
+      <ul class="price-features">
+        <li>Everything in Explorer</li>
+        <li>Unlimited trips</li>
+        <li>Automatic reservations (OpenTable, Resy)</li>
+        <li>Ticket & experience booking</li>
+        <li>Priority itinerary generation</li>
+      </ul>
+      <a href="#" class="btn-primary" style="display:block; text-align:center;">Join the waitlist</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <a href="#" class="logo">Way<span>farer</span></a>
+  <div class="footer-links">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#">Contact</a>
+  </div>
+  <div style="font-size: 13px;">© 2025 Wayfarer. All rights reserved.</div>
+</footer>
+
+</body>
+</html>
