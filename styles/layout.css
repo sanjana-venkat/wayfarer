@@ -1,0 +1,10 @@
+body {
+  font-family: var(--font-sans);
+  background: var(--color-warm-white);
+  color: var(--color-ink);
+  line-height: 1.6;
+}
+
+section {
+  padding: 100px 80px;
+}
