@@ -8,3 +8,9 @@ body {
 section {
   padding: 100px 80px;
 }
+
+@media (max-width: 900px) {
+  section {
+    padding: 64px 24px;
+  }
+}
